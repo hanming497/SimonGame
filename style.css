@@ -1,0 +1,33 @@
+#board {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	grid-gap: 5px;
+	height: 300px;
+	width: 300px;
+}
+
+#R1 {
+	background-color: red;
+}
+#B2 {
+	background-color: lightskyblue;
+}
+#G3 {
+	background-color: rgb(47, 236, 47);
+}
+#Y4 {
+	background-color: bisque;
+}
+
+.lightUp {
+	border-width: 10px;
+}
+
+.bigText {
+	font-size: 30px;
+}
+
+.hideElem {
+	visibility: hidden;
+}
