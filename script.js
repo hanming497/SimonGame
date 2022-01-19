@@ -33,7 +33,12 @@ let score = 0;
 let proceed = true;
 let isInMode2 = false;
 let inputArray = [];
-
+const COLORS = {
+    RED: 'R',
+    BLUE: 'B',
+    GREEN: 'G',
+    YELLOW: 'Y'
+}
 //setting up initialize function s
 const initizalizeGame = () => {
     createBoxClickEvents()
@@ -50,10 +55,10 @@ function createBoxClickEvents() {
             }
         }
     }
-    $red.on("click", onBoxClick('R'))
-    $blue.on("click", onBoxClick('B'))
-    $green.on("click", onBoxClick('G'))
-    $yellow.on("click", onBoxClick('Y'))
+    $red.on("click", onBoxClick(COLORS.RED))
+    $blue.on("click", onBoxClick(COLORS.BLUE))
+    $green.on("click", onBoxClick(COLORS.GREEN))
+    $yellow.on("click", onBoxClick(COLORS.YELLOW))
 }
 
 function createPlayClickEvent() {
@@ -94,25 +99,25 @@ async function trySwitch(color, currentColors) {
             $red.addClass('lightUp');
             await new Promise(r => setTimeout(r, 1000));
             $red.removeClass('lightUp');
-            currentColors.push('R')
+            currentColors.push(COLORS.RED)
             break;
         case 1:
             $blue.addClass('lightUp');
             await new Promise(r => setTimeout(r, 1000));
             $blue.removeClass('lightUp');
-            currentColors.push('B')
+            currentColors.push(COLORS.BLUE)
             break;
         case 2:
             $green.addClass('lightUp');
             await new Promise(r => setTimeout(r, 1000));
             $green.removeClass('lightUp');
-            currentColors.push('G')
+            currentColors.push(COLORS.GREEN)
             break;
         case 3:
             $yellow.addClass('lightUp');
             await new Promise(r => setTimeout(r, 1000));
             $yellow.removeClass('lightUp');
-            currentColors.push('Y')
+            currentColors.push(COLORS.YELLOW)
             break;
         default:
             console.log("error")
