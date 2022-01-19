@@ -3,7 +3,7 @@
 
 //PseudoCode:
 //let array = [];
-//2 modes: display and waiting for input (async)
+//2 modes: display (mode1) and waiting for input (mode2)
 
 //repeat two modes until user input is WRONG 
 
@@ -31,8 +31,9 @@ let $loser = $('#loseMSG')
 let $header = $('#startMSG')
 let score = 0;
 let proceed = true;
-let isInMode2 = false;
+let isInUserInputMode = false;
 let inputArray = [];
+let highScore = window.localStorage.getItem("highScore");
 const COLORS = {
     RED: 'R',
     BLUE: 'B',
@@ -44,12 +45,16 @@ const initizalizeGame = () => {
     createBoxClickEvents()
     createPlayClickEvent()
     createResetClickEvent()
+    if (highScore != null) {
+        $score.append(`<p>High Score: ${highScore}</p>`);
+    }
+
 }
 
 function createBoxClickEvents() {
     const onBoxClick = (color) => {
         return () => {
-            if (isInMode2) {
+            if (isInUserInputMode) {
                 inputArray.push(color)
             }
         }
@@ -63,7 +68,7 @@ function createBoxClickEvents() {
 function createPlayClickEvent() {
     $play.on("click", function () {
         //start the game
-        mode1();
+        displayMode();
         score = 0;
         $play.attr("disabled", true);
         $header.addClass('hideElem')
@@ -74,79 +79,81 @@ function createResetClickEvent() {
     $reset.on("click", function () {
         $play.attr("disabled", false);
         score = 0;
-        isInMode2 = false;
+        isInUserInputMode = false;
         proceed = true;
         $loser.removeClass('bigText');
         $loser.html('')
         $score.removeClass('bigText');
         $score.html(`Your Score: ${score}`)
+        if (highScore != null) {
+            $score.append(`<p>High Score: ${highScore}</p>`);
+        }
         $board.removeClass('hideElem')
         $header.removeClass('hideElem')
     })
 }
 
-
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
+}
+
+async function lightUpWaitPush(color, currentColors, colorToPush) {
+    color.addClass('lightUp');
+    await new Promise(r => setTimeout(r, 1000));
+    color.removeClass('lightUp');
+    currentColors.push(colorToPush);
 }
 
 async function trySwitch(color, currentColors) {
     switch (color) {
         case 0:
-            $red.addClass('lightUp');
-            await new Promise(r => setTimeout(r, 1000));
-            $red.removeClass('lightUp');
-            currentColors.push(COLORS.RED)
+            await lightUpWaitPush($red, currentColors, COLORS.RED);
             break;
         case 1:
-            $blue.addClass('lightUp');
-            await new Promise(r => setTimeout(r, 1000));
-            $blue.removeClass('lightUp');
-            currentColors.push(COLORS.BLUE)
+            await lightUpWaitPush($blue, currentColors, COLORS.BLUE);
             break;
         case 2:
-            $green.addClass('lightUp');
-            await new Promise(r => setTimeout(r, 1000));
-            $green.removeClass('lightUp');
-            currentColors.push(COLORS.GREEN)
+            await lightUpWaitPush($green, currentColors, COLORS.GREEN)
             break;
         case 3:
-            $yellow.addClass('lightUp');
-            await new Promise(r => setTimeout(r, 1000));
-            $yellow.removeClass('lightUp');
-            currentColors.push(COLORS.YELLOW)
+            await lightUpWaitPush($yellow, currentColors, COLORS.YELLOW)
             break;
         default:
-            console.log("error")
+            console.log("error!")
     }
 
 }
 
-async function mode1() {
-    isInMode2 = false;
+async function displayMode() {
+    isInUserInputMode = false;
     $score.html(`Your Score: ${score}`)
-    if (proceed) {
-        //mode1 returns an array 
-        let currentColors = [];
-        let counter = score + 1;
-        while (counter > 0) {
-            let color = getRandomInt(4)
-            //added in for clarity when same color was displayed 
-            await new Promise(r => setTimeout(r, 100));
-            //sends us into trycatch
-            await trySwitch(color, currentColors)
-            counter--;
-        }
-        mode2(currentColors)
+    if (highScore != null) {
+        $score.append(`<p>High Score: ${highScore}</p>`);
     }
+    if (!proceed) return;
+
+    //mode1 returns an array 
+    let currentColors = [];
+    let counter = score + 1;
+    while (counter > 0) {
+        let color = getRandomInt(4)
+        //added in for clarity when same color was displayed 
+        await new Promise(r => setTimeout(r, 100));
+        //sends us into trycatch
+        await trySwitch(color, currentColors)
+        counter--;
+    }
+    userInputMode(currentColors)
+
 }
 
-async function mode2(currentColors) {
-    isInMode2 = true;
+async function userInputMode(currentColors) {
+    isInUserInputMode = true;
     //making timeout change with score for fair game. 
-    let timeOut = (score + 1.5) * 1000
+    let timeOut = (score + 1.5) * 1000;
 
     await new Promise(r => setTimeout(r, timeOut));
+
     let isPersonCorrect = true;
     while (isPersonCorrect && currentColors.length != 0) {
         let currentColor = currentColors.shift()
@@ -163,7 +170,11 @@ async function mode2(currentColors) {
     if (isPersonCorrect) {
         console.log('Correct!')
         score += 1;
-        mode1();
+        if (score > highScore) {
+            window.localStorage.setItem("highScore", score)
+            highScore = score;
+        }
+        displayMode();
     }
     else {
         proceed = false;

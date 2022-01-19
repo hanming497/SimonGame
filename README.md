@@ -34,6 +34,8 @@ Click play to start!
 
 A list of icebox items for the next steps:
 
-1. Introduce High Scores
+~~1. Introduce High Scores~~<sup>Whoo!</sup>
+
 2. Add higher difficulty levels
+
 3. Add a sound effect for light up, losing and winning
