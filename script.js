@@ -150,7 +150,10 @@ async function displayMode() {
 async function userInputMode(currentColors) {
     isInUserInputMode = true;
     //making timeout change with score for fair game. 
-    let timeOut = (score + 1.5) * 1000;
+
+    let timeOut = score * 1000 + 1.25 * 1000;
+    if (score > 3)
+        timeOut -= 1250;
 
     await new Promise(r => setTimeout(r, timeOut));
 
