@@ -51,7 +51,6 @@ function createBoxClickEvents() {
         return () => {
             if (isInMode2) {
                 inputArray.push(color)
-                console.log(color)
             }
         }
     }
@@ -86,8 +85,6 @@ function createResetClickEvent() {
     })
 }
 
-//starting game:
-initizalizeGame();
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -140,7 +137,6 @@ async function mode1() {
             await trySwitch(color, currentColors)
             counter--;
         }
-        console.log(currentColors)
         mode2(currentColors)
     }
 }
@@ -178,3 +174,6 @@ async function mode2(currentColors) {
     }
 }
 
+
+//starting game:
+initizalizeGame();
